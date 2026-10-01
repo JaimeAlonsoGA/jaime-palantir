@@ -58,7 +58,7 @@ En local, la API escribe en disco. En Vercel el disco no guarda escrituras. Publ
 
 ## Tecnología
 
-Next.js 15 y React 19, que es lo que ya sirve `https://jaime360.vercel.app`. El contrato de contenido no depende de la interfaz: cuando se rehaga la UI, estos archivos siguen siendo la fuente.
+Next.js 15 y React 19, que es lo que ya sirve `https://jaimealonso.dev`. El contrato de contenido no depende de la interfaz: cuando se rehaga la UI, estos archivos siguen siendo la fuente.
 
 ## Comprobar
 

@@ -4,7 +4,7 @@ Portfolio de Jaime Alonso. Next.js 15 sirve las páginas y una API privada para 
 
 Empieza por [AGENTS.md](AGENTS.md). Ahí está el contrato para Jaime y para un agente que llega sin contexto.
 
-Producción sigue en `main` (`https://jaime360.vercel.app`). Esta rama es local. No hagas push ni despliegues hasta que Jaime lo pida. La interfaz se rehace después; no la cambies en esta pasada.
+Producción sigue en `main` (`https://jaimealonso.dev`). Esta rama es local. No hagas push ni despliegues hasta que Jaime lo pida. La interfaz se rehace después; no la cambies en esta pasada.
 
 La API escribe en disco solo en local. En Vercel eso no persiste. Publicar es commitear `content/` y `public/` y desplegar ese commit.
 
