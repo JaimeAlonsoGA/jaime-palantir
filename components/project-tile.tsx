@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { LuArrowUpRight, LuChevronLeft, LuChevronRight, LuX } from "react-icons/lu";
 import { linkIcon } from "./link-icon";
 import { MediaFill } from "./media-fill";
@@ -25,24 +25,126 @@ export type TileProject = Pick<Project, "id" | "title" | "summary" | "kind" | "y
 
 export type TileSize = "hero" | "wide" | "small" | "open";
 
+/** Original box of the closed tile, so its cover and title stay put while the border grows. */
+export type TileLock = { width: number; height: number } | null;
+
 /** Collapsed: a cover with the essentials. Open: an image viewer and the full details, in place. */
 export function ProjectTile({
   project,
   size,
   index,
+  lock = null,
   onOpen,
   onClose,
 }: {
   project: TileProject;
   size: TileSize;
   index: number;
+  lock?: TileLock;
   onOpen: () => void;
   onClose: () => void;
 }) {
-  return size === "open" ? (
-    <Expanded project={project} onClose={onClose} />
-  ) : (
-    <Collapsed project={project} size={size} priority={index < 2} onOpen={onOpen} />
+  const expanded = size === "open";
+  const { fading, returning } = useCoverFade(expanded);
+  const root = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (fading && root.current) morphIntoViewer(root.current);
+  }, [fading]);
+  const held = useRef<TileLock>(lock);
+  const closedSize = useRef<Exclude<TileSize, "open">>(size === "open" ? "small" : size);
+  if (lock) held.current = lock;
+  if (size !== "open") closedSize.current = size;
+
+  return (
+    <div ref={root} className="relative h-full">
+      {/* Mounted as soon as the opening starts, invisible, so its images load while the border grows */}
+      {expanded || (lock && !returning) ? (
+        <div
+          className={expanded ? "absolute inset-0" : "pointer-events-none absolute inset-0 opacity-0"}
+          aria-hidden={!expanded}
+          {...{ inert: !expanded || undefined }}
+        >
+          <Expanded project={project} onClose={onClose} />
+        </div>
+      ) : null}
+      {!expanded || fading ? (
+        <div className={expanded ? "cover-out pointer-events-none absolute inset-0 z-10" : returning ? "cover-in h-full" : "h-full"}>
+          <Collapsed
+            project={project}
+            size={size === "open" ? closedSize.current : size}
+            priority={index < 2}
+            onOpen={onOpen}
+            lock={expanded ? held.current : lock}
+            ghost={expanded}
+          />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+const coverMs = 260; // the cover crossfades over this long; keep in step with .cover-out / .cover-in
+const morphMs = 460;
+const morphEasing = "cubic-bezier(0.22, 1, 0.36, 1)";
+
+/**
+ * Opening: keep the closed cover over the open project for a short crossfade.
+ * Closing: fade the cover back in while the border shrinks around it.
+ */
+function useCoverFade(expanded: boolean) {
+  const previous = useRef(expanded);
+  const [fading, setFading] = useState(false);
+  const [returning, setReturning] = useState(false);
+  if (expanded !== previous.current) {
+    previous.current = expanded;
+    if (expanded) {
+      setFading(true);
+      setReturning(false);
+    } else {
+      setFading(false);
+      setReturning(true);
+    }
+  }
+  useEffect(() => {
+    if (!fading && !returning) return;
+    const done = () => {
+      setFading(false);
+      setReturning(false);
+    };
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      done();
+      return;
+    }
+    const timer = window.setTimeout(done, coverMs);
+    return () => window.clearTimeout(timer);
+  }, [fading, returning]);
+  return { fading, returning };
+}
+
+/**
+ * The cover's picture and the viewer's first picture are the same thing at two sizes.
+ * Fly one into the other (transform only), so the image never jumps when the viewer takes over.
+ */
+function morphIntoViewer(root: HTMLElement) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const cover = root.querySelector<HTMLElement>('.cover-out [data-morph="cover"]')?.firstElementChild as HTMLElement | null;
+  const slide = root.querySelector<HTMLElement>('[data-morph="viewer"]')?.firstElementChild as HTMLElement | null;
+  const viewer = slide?.querySelector<HTMLElement>("[data-frame]") ?? slide;
+  if (!cover || !viewer) return;
+  const from = cover.getBoundingClientRect();
+  const to = viewer.getBoundingClientRect();
+  if (!from.width || !to.width) return;
+  const scale = Math.min(from.width / to.width, from.height / to.height);
+  const dx = from.left + from.width / 2 - (to.left + to.width / 2);
+  const dy = from.top + from.height / 2 - (to.top + to.height / 2);
+  const timing = { duration: morphMs, easing: morphEasing };
+  viewer.animate(
+    [{ transform: `translate(${dx}px, ${dy}px) scale(${scale})` }, { transform: "none" }],
+    timing,
+  );
+  cover.animate(
+    [{ transform: "none" }, { transform: `translate(${-dx}px, ${-dy}px) scale(${1 / scale})` }],
+    { ...timing, fill: "forwards" },
   );
 }
 
@@ -60,21 +162,36 @@ function Collapsed({
   size,
   priority,
   onOpen,
+  lock = null,
+  ghost = false,
 }: {
   project: TileProject;
   size: Exclude<TileSize, "open">;
   priority: boolean;
   onOpen: () => void;
+  lock?: TileLock;
+  /** The open project owns the border; this layer is only the cover fading off it. */
+  ghost?: boolean;
 }) {
   const big = size === "hero";
   return (
     <article
       className={cn(
-        "group relative isolate h-full overflow-hidden rounded-3xl border border-white/15 bg-zinc-950 shadow-2xl shadow-black/50",
-        "transition-[border-color] duration-300 hover:border-white/35",
+        "group relative isolate h-full overflow-hidden rounded-3xl border bg-zinc-950 shadow-2xl shadow-black/50",
+        ghost
+          ? "border-transparent bg-transparent shadow-none"
+          : "border-white/15 transition-[border-color] duration-300 hover:border-white/35",
+        lock && !ghost && "border-white/40",
       )}
     >
-      <Cover project={project} size={size} priority={priority} />
+      {/* While the border grows, the picture fills it and the title stays in its original box. */}
+      {ghost || lock ? null : <Cover project={project} size={size} priority={priority} />}
+      <div
+        className={lock ? "absolute overflow-hidden" : "contents"}
+        style={lock ? { top: 0, left: 0, width: lock.width, height: lock.height } : undefined}
+      >
+      {/* The picture keeps its closed size: a growing cover would upscale the small rendition */}
+      {ghost || lock ? <Cover project={project} size={size} priority={priority} /> : null}
 
       {/* Legibility: the lower half fades to black under the text */}
       <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black from-20% via-black/80 via-45% to-transparent to-75%" />
@@ -126,6 +243,7 @@ function Collapsed({
           })}
         </nav>
       ) : null}
+      </div>
     </article>
   );
 }
@@ -182,7 +300,7 @@ function Cover({ project, size, priority }: { project: TileProject; size: Exclud
       // A size container: the window's width follows the tile's height too, so a wide tile still shows the screen
       <div className="absolute inset-0 [container-type:size]">
         {wash}
-        <div className={cn("absolute inset-x-0 top-5 flex justify-center", zoom)}>
+        <div data-morph="cover" className={cn("absolute inset-x-0 top-5 flex justify-center", zoom)}>
           <ScreenFrame
             src={cover}
             ratio={project.ratios[cover]}
@@ -202,7 +320,7 @@ function Cover({ project, size, priority }: { project: TileProject; size: Exclud
   return (
     <div className="absolute inset-0">
       {wash}
-      <div className={cn("absolute inset-x-0 top-4 flex justify-center gap-3", size === "hero" ? "h-[60%]" : "h-[46%]", zoom)}>
+      <div data-morph="cover" className={cn("absolute inset-x-0 top-4 flex justify-center gap-3", size === "hero" ? "h-[60%]" : "h-[46%]", zoom)}>
         {screens.map((src, index) => (
           <div
             key={src}
@@ -255,7 +373,7 @@ function Expanded({ project, onClose }: { project: TileProject; onClose: () => v
       <Viewer project={project} />
 
       {/* Details keep their full size; the viewer takes whatever is left */}
-      <div className="enter-fade flex shrink-0 flex-col [--delay:220ms] p-5 sm:w-[300px] sm:overflow-y-auto sm:p-6 lg:w-[380px] lg:p-7">
+      <div className="flex shrink-0 flex-col p-5 sm:w-[300px] sm:overflow-y-auto sm:p-6 lg:w-[380px] lg:p-7">
         <Meta project={project} />
         <h2 className="mt-1.5 pr-10 text-3xl font-medium text-white">{project.title}</h2>
         <p className="mt-3 text-sm leading-relaxed text-white/85">{project.summary}</p>
@@ -329,6 +447,7 @@ function Viewer({ project }: { project: TileProject }) {
       <div
         ref={strip}
         onScroll={update}
+        data-morph="viewer"
         className="scrollbar-hide flex h-full snap-x snap-mandatory gap-3 overflow-x-auto p-3 sm:p-4"
       >
         {project.images.map((src, index) => {

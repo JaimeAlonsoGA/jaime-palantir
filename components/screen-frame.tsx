@@ -29,6 +29,7 @@ export function ScreenFrame({
 }) {
   return (
     <div
+      data-frame
       className={cn(
         "flex flex-col overflow-hidden rounded-xl bg-zinc-900 shadow-2xl shadow-black/70 ring-1 ring-white/15",
         className,

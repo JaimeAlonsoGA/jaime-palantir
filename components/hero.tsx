@@ -103,7 +103,11 @@ const Hero = ({
     let interval: ReturnType<typeof setInterval> | undefined;
 
     const activateRandom = () => {
-      if (remaining.length === 0) remaining = [...allSkills];
+      if (remaining.length === 0) {
+        // Phones show only the first group: don't light up badges nobody can see
+        const visible = window.matchMedia("(min-width: 640px)").matches ? allSkills : (skills[0]?.items ?? []);
+        remaining = [...visible];
+      }
       const [picked] = remaining.splice(Math.floor(Math.random() * remaining.length), 1);
       setActiveSkill(picked);
     };
@@ -117,7 +121,7 @@ const Hero = ({
       clearTimeout(timeout);
       if (interval) clearInterval(interval);
     };
-  }, [allSkills]);
+  }, [allSkills, skills]);
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center w-full">
@@ -149,7 +153,15 @@ const Hero = ({
 
         <div className="flex w-full flex-col items-center gap-4 lg:gap-3 mb-10">
           {skills.map((group, groupIndex) => (
-            <ul key={group.group} aria-label={group.group} className="flex w-full flex-wrap justify-center gap-2 sm:gap-2.5 lg:w-auto lg:flex-nowrap lg:gap-3">
+            // On phones only the core group shows, so the actions stay in view
+            <ul
+              key={group.group}
+              aria-label={group.group}
+              className={cn(
+                "w-full flex-wrap justify-center gap-2 sm:flex sm:gap-2.5 lg:w-auto lg:flex-nowrap lg:gap-3",
+                groupIndex === 0 ? "flex" : "hidden",
+              )}
+            >
               {/* Fixed widths keep columns aligned: 2 on phones, 4 on tablets, one row per group on desktop */}
               {group.items.map((skill, index) => {
                 const { Icon, color } = skillStyle(skill);

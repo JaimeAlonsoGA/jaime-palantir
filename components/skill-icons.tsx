@@ -1,5 +1,4 @@
 import type { IconType } from "react-icons/lib";
-import { FaAws } from "react-icons/fa";
 import {
   LuBug,
   LuFlaskConical,
@@ -29,7 +28,6 @@ const skills: Record<string, { icon: IconType; color: string }> = {
   "next.js": { icon: SiNextdotjs, color: "#FFFFFF" },
   "node.js": { icon: SiNodedotjs, color: "#5FA04E" },
   "sql / postgresql": { icon: SiPostgresql, color: "#4169E1" },
-  "aws": { icon: FaAws, color: "#FF9900" },
   "docker": { icon: SiDocker, color: "#2496ED" },
   "api integration (rest)": { icon: LuPlug, color: "#22D3EE" },
   "software architecture": { icon: LuLayers, color: "#A78BFA" },

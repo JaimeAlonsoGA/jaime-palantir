@@ -70,6 +70,18 @@
   }
 }
 
+@keyframes cover-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes cover-in {
+  from {
+    opacity: 0;
+  }
+}
+
 @keyframes enter-fade {
   from {
     opacity: 0;
@@ -112,6 +124,15 @@
 
   .enter-title {
     animation: enter-title 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0ms) both;
+  }
+
+  /* Keep in step with coverMs in components/project-tile.tsx */
+  .cover-out {
+    animation: cover-out 260ms ease both;
+  }
+
+  .cover-in {
+    animation: cover-in 260ms ease both;
   }
 
   .enter-fade {

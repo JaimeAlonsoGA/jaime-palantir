@@ -46,7 +46,7 @@
   "skills": [
     {
       "group": "Core technologies",
-      "items": ["TypeScript", "React", "Next.js", "Node.js", "SQL / PostgreSQL", "AWS", "Docker"]
+      "items": ["TypeScript", "React", "Next.js", "Node.js", "SQL / PostgreSQL", "Docker"]
     },
     {
       "group": "Competencies",

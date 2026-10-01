@@ -2,12 +2,12 @@
 
 import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { KindFilter, allKinds, kindCounts, useKind } from "./kind-filter";
-import { ProjectTile, type TileProject, type TileSize } from "./project-tile";
-import { useFlip } from "./use-flip";
+import { ProjectTile, type TileLock, type TileProject, type TileSize } from "./project-tile";
+import { holdInstantScroll, releaseShells, useFlip } from "./use-flip";
 import { cn } from "@/lib/utils";
 
-// Bento grid. The lead projects get the big tiles; a click opens a project in place, full width,
-// and the others glide out of its way (useFlip). The URL follows (/projects/<id>) so an open project is shareable.
+// Bento grid. The lead projects get the big tiles. A click centers that tile, grows it down,
+// then widens it. The URL follows (/projects/<id>) so an open project is shareable.
 export function ProjectsGrid({
   projects,
   lead,
@@ -21,8 +21,13 @@ export function ProjectsGrid({
   const kindNames = useMemo(() => counts.map(([name]) => name), [counts]);
   const [kind, setKind] = useKind(kindNames);
   const [open, setOpen] = useState<string | null>(initialOpen);
+  const [details, setDetails] = useState<string | null>(initialOpen);
+  const [lock, setLock] = useState<TileLock>(null);
+  // The project shrinking back: it keeps the lock so its cover stays crisp at the closed size
+  const [closing, setClosing] = useState<string | null>(null);
+  const [motionKey, setMotionKey] = useState(0);
   const grid = useRef<HTMLDivElement>(null);
-  const { capture, settle } = useFlip(grid, `${kind}|${open}`);
+  const { capture, settle, flipped } = useFlip(grid, `${kind}|${open}|${motionKey}`);
   const opening = useRef(0);
 
   const shown = kind === allKinds ? projects : projects.filter((project) => project.kind === kind);
@@ -33,26 +38,72 @@ export function ProjectsGrid({
     window.history.replaceState(null, "", url);
   }, []);
 
-  // Lock the screen on the closed tile, then let it unfold.
+  const reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Center the closed tile, then grow it down and across. The cover stays put inside the border.
   const openProject = (id: string) => {
     const ticket = ++opening.current;
-    void settle(id).then(() => {
+    const releaseScroll = holdInstantScroll();
+    releaseShells(grid.current);
+    setClosing(null);
+    const run = async () => {
+      if (!reduceMotion()) await settle(id);
       if (ticket !== opening.current) return;
+      const cell = grid.current?.querySelector<HTMLElement>(`[data-flip="${CSS.escape(id)}"]`);
+      const rect = cell?.getBoundingClientRect();
+      setLock(rect ? { width: rect.width, height: rect.height } : null);
+      if (reduceMotion()) {
+        setOpen(id);
+        setDetails(id);
+        syncUrl(id);
+        return;
+      }
       capture(id);
       setOpen(id);
+      setMotionKey((key) => key + 1);
       syncUrl(id);
-    });
+      await flipped();
+      if (ticket !== opening.current) return;
+      setDetails(id);
+    };
+    void run().finally(releaseScroll);
   };
 
   const close = useCallback(() => {
-    capture(open);
-    setOpen(null);
-    syncUrl(null);
-  }, [capture, open, syncUrl]);
+    opening.current += 1; // cancels an opening still in flight
+    const releaseScroll = holdInstantScroll();
+    releaseShells(grid.current);
+    const run = async () => {
+      const id = open;
+      setDetails(null);
+      if (!id || reduceMotion()) {
+        setLock(null);
+        setOpen(null);
+        syncUrl(null);
+        return;
+      }
+      setClosing(id);
+      capture(id);
+      setOpen(null);
+      setMotionKey((key) => key + 1);
+      syncUrl(null);
+      await flipped();
+      setClosing(null);
+      setLock(null);
+    };
+    void run().finally(releaseScroll);
+  }, [capture, flipped, open, syncUrl]);
 
   const chooseKind = (next: string) => {
-    capture();
+    opening.current += 1;
+    releaseShells(grid.current);
+    capture(null);
+    setLock(null);
+    setClosing(null);
+    setDetails(null);
+    setOpen(null);
     setKind(next);
+    setMotionKey((key) => key + 1);
   };
 
   // Arriving at /projects/<id>: bring the open project into view
@@ -76,11 +127,11 @@ export function ProjectsGrid({
     if (open && !shown.some((project) => project.id === open)) close();
   }, [open, shown, close]);
 
-  const sizes: TileSize[] = shown.map((project, index) => {
-    if (project.id === open) return "open";
+  const closedSizes: TileSize[] = shown.map((_, index) => {
     if (kind !== allKinds || index >= lead) return "small";
     return index === 0 ? "hero" : index === 1 ? "wide" : "small";
   });
+  const sizes = closedSizes.map((size, index) => (shown[index].id === open ? "open" : size));
   const spans = evenRows(sizes, shown.map((project) => project.shape));
 
   return (
@@ -98,16 +149,19 @@ export function ProjectsGrid({
             key={project.id}
             id={`project-${project.id}`}
             data-flip={project.id}
-            className={cn("enter-pop scroll-mt-28", spans[index])}
+            className={cn("enter-pop relative scroll-mt-28", spans[index])}
             style={{ "--delay": `${60 + index * 40}ms` } as CSSProperties}
           >
-            <ProjectTile
-              project={project}
-              size={sizes[index]}
-              index={index}
-              onOpen={() => openProject(project.id)}
-              onClose={close}
-            />
+            <div data-shell className="h-full">
+              <ProjectTile
+                project={project}
+                size={details === project.id ? "open" : closedSizes[index]}
+                index={index}
+                lock={(project.id === open || project.id === closing) && details !== project.id ? lock : null}
+                onOpen={() => openProject(project.id)}
+                onClose={close}
+              />
+            </div>
           </div>
         ))}
       </div>
