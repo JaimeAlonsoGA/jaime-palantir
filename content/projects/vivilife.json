@@ -1,0 +1,31 @@
+{
+  "id": "vivilife",
+  "title": "Vivilife",
+  "summary": "Complete website for Vivilife, an app for coaches and communities.",
+  "kind": "Web",
+  "year": 2024,
+  "status": "published",
+  "stack": [
+    "javascript",
+    "react",
+    "tailwindcss"
+  ],
+  "links": [
+    {
+      "label": "Website",
+      "url": "https://vivilife-web.web.app/"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/vivilife_web"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/vivilife/card1.webp",
+      "/images/vivilife/card2.webp",
+      "/images/vivilife/card3.webp"
+    ],
+    "video": null
+  }
+}

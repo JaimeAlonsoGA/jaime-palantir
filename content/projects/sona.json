@@ -1,0 +1,44 @@
+{
+  "id": "sona",
+  "title": "Sona",
+  "summary": "AI generative audio VST plugin and desktop app, run on a subscription-based SaaS model. It integrates audio LLMs from different providers and combines them in a high-level interface for a curated user experience. Under Sona, there is a complete suite of observability software to track production usage and direct efforts.",
+  "kind": "Plugin",
+  "year": 2025,
+  "status": "published",
+  "stack": [
+    "typescript",
+    "c++",
+    "react",
+    "nextjs",
+    "tailwindcss",
+    "tanstack",
+    "node",
+    "rest-api",
+    "postgresql",
+    "stripe",
+    "docker",
+    "github-actions",
+    "openai",
+    "replicate",
+    "juce"
+  ],
+  "links": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/sona-old"
+    },
+    {
+      "label": "Website",
+      "url": "https://sona.audio"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/sona/frame1.webp",
+      "/images/sona/frame2.webp",
+      "/images/sona/frame3.webp",
+      "/images/sona/frame4.webp"
+    ],
+    "video": null
+  }
+}

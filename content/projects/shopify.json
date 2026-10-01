@@ -1,0 +1,19 @@
+{
+  "id": "shopify",
+  "title": "Shopify Product Uploader",
+  "summary": "Shopify integration tool for complex retail operations. It automates product uploads, translations, product migration between domains and store synchronisation.",
+  "kind": "Tool",
+  "year": 2025,
+  "status": "published",
+  "stack": [
+    "typescript",
+    "node",
+    "graphql",
+    "shopify"
+  ],
+  "links": [],
+  "media": {
+    "images": [],
+    "video": null
+  }
+}

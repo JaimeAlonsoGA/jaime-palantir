@@ -1,0 +1,206 @@
+[
+  {
+    "id": "typescript",
+    "name": "TypeScript",
+    "color": "#3178C6",
+    "category": "Languages"
+  },
+  {
+    "id": "javascript",
+    "name": "JavaScript",
+    "color": "#F7DF1E",
+    "category": "Languages"
+  },
+  {
+    "id": "go",
+    "name": "Go",
+    "color": "#00ADD8",
+    "category": "Languages"
+  },
+  {
+    "id": "c++",
+    "name": "C++",
+    "color": "#00599C",
+    "category": "Languages"
+  },
+  {
+    "id": "shell",
+    "name": "Shell",
+    "color": "#4EAA25",
+    "category": "Languages"
+  },
+  {
+    "id": "react",
+    "name": "React",
+    "color": "#61DAFB",
+    "category": "Frontend"
+  },
+  {
+    "id": "nextjs",
+    "name": "Next",
+    "color": "#000000",
+    "category": "Frontend"
+  },
+  {
+    "id": "tailwindcss",
+    "name": "Tailwind",
+    "color": "#38BDF8",
+    "category": "Frontend"
+  },
+  {
+    "id": "tanstack",
+    "name": "TanStack Suite",
+    "color": "#FF4154",
+    "category": "Frontend"
+  },
+  {
+    "id": "node",
+    "name": "Node",
+    "color": "#339933",
+    "category": "Backend & data"
+  },
+  {
+    "id": "rest-api",
+    "name": "REST API",
+    "color": "#22D3EE",
+    "category": "Backend & data"
+  },
+  {
+    "id": "graphql",
+    "name": "GraphQL",
+    "color": "#E535AB",
+    "category": "Backend & data"
+  },
+  {
+    "id": "postgresql",
+    "name": "SQL / PostgreSQL",
+    "color": "#4169E1",
+    "category": "Backend & data"
+  },
+  {
+    "id": "sqlite",
+    "name": "SQLite",
+    "color": "#44A0E7",
+    "category": "Backend & data"
+  },
+  {
+    "id": "db2",
+    "name": "IBM Db2",
+    "color": "#0F62FE",
+    "category": "Backend & data"
+  },
+  {
+    "id": "nosql",
+    "name": "NoSQL",
+    "color": "#F59E0B",
+    "category": "Backend & data"
+  },
+  {
+    "id": "firebase",
+    "name": "Firebase",
+    "color": "#FFCA28",
+    "category": "Backend & data"
+  },
+  {
+    "id": "stripe",
+    "name": "Stripe",
+    "color": "#FFCA28",
+    "category": "Backend & data"
+  },
+  {
+    "id": "shopify",
+    "name": "Shopify",
+    "color": "#7AB55C",
+    "category": "Backend & data"
+  },
+  {
+    "id": "amazon-sp-api",
+    "name": "Amazon SP-API",
+    "color": "#FF9900",
+    "category": "Backend & data"
+  },
+  {
+    "id": "docker",
+    "name": "Docker",
+    "color": "#2496ED",
+    "category": "Cloud & DevOps"
+  },
+  {
+    "id": "github-actions",
+    "name": "GitHub Actions",
+    "color": "#2088FF",
+    "category": "Cloud & DevOps"
+  },
+  {
+    "id": "mcp",
+    "name": "MCP",
+    "color": "#FFFFFF",
+    "category": "AI"
+  },
+  {
+    "id": "openai",
+    "name": "OpenAI",
+    "color": "#FFFFFF",
+    "category": "AI"
+  },
+  {
+    "id": "replicate",
+    "name": "Replicate",
+    "color": "#FFFFFF",
+    "category": "AI"
+  },
+  {
+    "id": "react native",
+    "name": "React Native",
+    "color": "#61DAFB",
+    "category": "Mobile"
+  },
+  {
+    "id": "expo",
+    "name": "Expo",
+    "color": "#000020",
+    "category": "Mobile"
+  },
+  {
+    "id": "capacitor",
+    "name": "Capacitor",
+    "color": "#119EFF",
+    "category": "Mobile"
+  },
+  {
+    "id": "juce",
+    "name": "JUCE",
+    "color": "#8DC63F",
+    "category": "Desktop & audio"
+  },
+  {
+    "id": "esp32",
+    "name": "ESP32",
+    "color": "#E7352C",
+    "category": "Hardware"
+  },
+  {
+    "id": "arduino",
+    "name": "Arduino",
+    "color": "#00979D",
+    "category": "Hardware"
+  },
+  {
+    "id": "platformio",
+    "name": "PlatformIO",
+    "color": "#F5822A",
+    "category": "Hardware"
+  },
+  {
+    "id": "web3",
+    "name": "Web3",
+    "color": "#F16822",
+    "category": "Web3"
+  },
+  {
+    "id": "wagmi",
+    "name": "Wagmi",
+    "color": "#FF4154",
+    "category": "Web3"
+  }
+]

@@ -1,193 +1,206 @@
 "use client";
 
-import { text } from "@/data/text";
-import { techs } from "@/data/techs";
+import type { Person } from "@/lib/content/schema";
 import { cn } from "@/lib/utils";
-import { Badge } from "./ui/badge";
+import { skillStyle } from "./skill-icons";
 
-import { motion } from "framer-motion";
 import { SeeMore } from "./seeMore";
-import { useEffect, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 
-const Hero = () => {
+// Muted VS Code Dark+ tones. Each word takes the next one so the line reads like code.
+const syntax = ["#569CD6", "#DCDCAA", "#6A9955", "#CE9178", "#D4D4D4"];
+const punctuation = "#D4D4D4";
+
+function tokenize(text: string) {
+  let word = 0;
+  return (text.match(/[\w'/-]+|\s+|[^\w\s]/g) ?? []).map((token) => {
+    if (/^\s+$/.test(token)) return { token, color: undefined };
+    if (/^[\w'/-]+$/.test(token)) return { token, color: syntax[word++ % syntax.length] };
+    return { token, color: punctuation };
+  });
+}
+
+function Code({ text }: { text: string }) {
+  return (
+    <>
+      {tokenize(text).map(({ token, color }, index) => (
+        color ? (
+          <span key={index} className="whitespace-nowrap" style={{ color }}>
+            {token}
+          </span>
+        ) : (
+          token
+        )
+      ))}
+    </>
+  );
+}
+
+// Reading order, in ms from first paint: name, phrase, skills group by group, actions, then the header.
+const timing = {
+  name: 0,
+  box: 200,
+  typeFrom: 450,
+  typeSpeed: 16,
+  skills: 1400,
+  groupGap: 150,
+  itemGap: 35,
+  actions: 2000,
+  cycleFrom: 3400,
+  cycleEvery: 1800,
+};
+
+const delay = (ms: number) => ({ "--delay": `${ms}ms` }) as CSSProperties;
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+// Timers count from first paint, not from hydration, so the sequence stays in step with the CSS.
+function sincePaint(ms: number) {
+  return Math.max(0, ms - performance.now());
+}
+
+const Hero = ({
+  name,
+  headline,
+  skills,
+}: {
+  name: string;
+  headline: string;
+  skills: Person["skills"];
+}) => {
   const [displayedText, setDisplayedText] = useState("");
-  const fullText = text.current.description;
-  const typingSpeed = 30;
-  const initialDelay = 2000;
-  const [hoveredTech, setHoveredTech] = useState<string | null>(null);
-  const [activeTechs, setActiveTechs] = useState<Set<string>>(new Set());
-  const [remainingTechs, setRemainingTechs] = useState<string[]>([]);
-  const [pulseActive, setPulseActive] = useState(false);
+  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+  const [activeSkill, setActiveSkill] = useState<string | null>(null);
+  const allSkills = useMemo(() => skills.flatMap((group) => group.items), [skills]);
 
   useEffect(() => {
-    let index = -2;
-
-    const startTyping = () => {
-      const interval = setInterval(() => {
-        if (index < fullText.length - 1) {
-          setDisplayedText((prev) => prev + fullText[index]);
-          index++;
-        } else {
-          clearInterval(interval);
-        }
-      }, typingSpeed);
-    };
-
-    const timeout = setTimeout(startTyping, initialDelay);
+    if (prefersReducedMotion()) {
+      setDisplayedText(headline);
+      return;
+    }
+    let interval: ReturnType<typeof setInterval> | undefined;
+    const timeout = setTimeout(() => {
+      let index = 0;
+      interval = setInterval(() => {
+        index += 1;
+        setDisplayedText(headline.slice(0, index));
+        if (index >= headline.length && interval) clearInterval(interval);
+      }, timing.typeSpeed);
+    }, sincePaint(timing.typeFrom));
 
     return () => {
       clearTimeout(timeout);
+      if (interval) clearInterval(interval);
     };
-  }, [fullText]);
+  }, [headline]);
 
-  // Activate pulse animation after 4 seconds
+  // Once everything has arrived, light up one skill at a time. It keeps going while the user hovers others.
   useEffect(() => {
-    const pulseTimer = setTimeout(() => {
-      setPulseActive(true);
-    }, 4000);
+    if (allSkills.length === 0 || prefersReducedMotion()) return;
+    let remaining: string[] = [];
+    let interval: ReturnType<typeof setInterval> | undefined;
 
-    return () => clearTimeout(pulseTimer);
-  }, []);
-
-  // Random tech activation effect
-  useEffect(() => {
-    // Initialize with all tech IDs
-    setRemainingTechs(techs.map(tech => tech.id));
-
-    const randomActivate = () => {
-      setRemainingTechs(prev => {
-        let available = prev.length > 0 ? prev : techs.map(tech => tech.id);
-
-        // Pick a random tech from available ones
-        const randomIndex = Math.floor(Math.random() * available.length);
-        const selectedTech = available[randomIndex];
-
-        // Remove selected tech from available list
-        const newRemaining = available.filter((_, index) => index !== randomIndex);
-
-        // Set as active
-        setActiveTechs(new Set([selectedTech]));
-
-        return newRemaining;
-      });
+    const activateRandom = () => {
+      if (remaining.length === 0) remaining = [...allSkills];
+      const [picked] = remaining.splice(Math.floor(Math.random() * remaining.length), 1);
+      setActiveSkill(picked);
     };
 
-    // Start random activation after initial delay
-    const initialTimeout = setTimeout(() => {
-      randomActivate();
-      const interval = setInterval(randomActivate, 700);
-      return () => clearInterval(interval);
-    }, initialDelay + 3000);
+    const timeout = setTimeout(() => {
+      activateRandom();
+      interval = setInterval(activateRandom, timing.cycleEvery);
+    }, sincePaint(timing.cycleFrom));
 
-    return () => clearTimeout(initialTimeout);
-  }, []);
+    return () => {
+      clearTimeout(timeout);
+      if (interval) clearInterval(interval);
+    };
+  }, [allSkills]);
 
   return (
-    <motion.div
-      className="min-h-screen flex flex-col justify-center items-center w-full"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-    >
-      <div className="text-white p-8 flex flex-col items-center justify-between max-w-4xl">
-        <motion.h1
-          className="text-7xl font-bold mb-4 text-center"
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
+    <div className="min-h-screen flex flex-col justify-center items-center w-full">
+      <div className="text-white w-full px-6 pt-24 pb-12 sm:px-8 flex flex-col items-center max-w-5xl">
+        <h1
+          className="enter-title text-5xl sm:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 text-center"
+          style={delay(timing.name)}
         >
-          <span className="bg-gradient-to-r from-slate-100 via-slate-300 to-slate-200 bg-clip-text text-transparent font-extrabold">Jaime Alonso</span>
-        </motion.h1>
+          {/* Solid color on purpose: transparent gradient text is invisible to LCP, and this is the page's main content */}
+          <span className="font-extrabold text-slate-200">{name}</span>
+        </h1>
 
-        <motion.pre
-          className={cn(
-            "tracking-wider mb-8 whitespace-pre-wrap bg-zinc-900 p-4 rounded-md text-left text-sm font-mono"
-          )}
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
+        <pre
+          className="enter-fade tracking-wider mb-8 sm:mb-10 whitespace-pre-wrap rounded-md border border-white/10 bg-[#1E1E1E] px-5 py-4 text-left text-sm font-mono w-fit max-w-full sm:max-w-[43.875rem] lg:max-w-[52rem]"
+          style={delay(timing.box)}
         >
-          <code>
-            {displayedText.split(" ").map((word, index) => (
-              <span
-                key={index}
-                className={
-                  word.toLowerCase().includes("developing") ||
-                    word.toLowerCase().includes("applications")
-                    ? "text-blue-400"
-                    : word.toLowerCase().includes("software") ||
-                      word.toLowerCase().includes("cross-platform")
-                      ? "text-green-400"
-                      : word.toLowerCase().includes("cutting-edge") ||
-                        word.toLowerCase().includes("solutions")
-                        ? "text-orange-400"
-                        : "text-gray-300"
-                }
-              >
-                {word.replace("undefined", "") + " "}
-              </span>
-            ))}
-            <motion.span
-              className={cn("ml-1")}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{
-                repeat: Infinity,
-                duration: 1,
-                ease: "easeInOut",
-              }}
-            >
-              |
-            </motion.span>
+          {/* Hugs the text, never wider than the badge grid. The full line sits invisible underneath so the box keeps its final size while typing */}
+          <span className="sr-only">{headline}</span>
+          <code aria-hidden className="grid">
+            <span className="invisible [grid-area:1/1]">
+              <Code text={headline} /> |
+            </span>
+            <span className="[grid-area:1/1]">
+              <Code text={displayedText} />
+              <span className="caret ml-1 text-[#AEAFAD]">|</span>
+            </span>
           </code>
-        </motion.pre>
+        </pre>
 
-        <motion.div
-          className="flex flex-wrap justify-center gap-3 mb-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.9, duration: 0.8 }}
-        >
-          {techs.map((tech) => (
-            <Badge
-              key={tech.id}
-              variant="secondary"
-              className={cn(
-                "flex items-center gap-2 px-4 py-2 transition-all",
-                `hover:bg-zinc-900/60 hover:scale-105 cursor-default hover:border hover:border-primary/60`,
-                activeTechs.has(tech.id) && "bg-zinc-900/60 border border-primary/60 transition-all duration-500"
-              )}
-              onMouseEnter={() => setHoveredTech(tech.id)}
-              onMouseLeave={() => setHoveredTech(null)}
-            >
-              <tech.icon
-                className="w-4 h-4"
-                style={{
-                  color: hoveredTech === tech.id || activeTechs.has(tech.id) ? tech.color : "inherit",
-                }}
-              />{" "}
-              <span
-                className="text-xs"
-                style={{
-                  color: hoveredTech === tech.id || activeTechs.has(tech.id) ? tech.color : "inherit",
-                }}
-              >
-                {tech.name}
-              </span>
-            </Badge>
+        <div className="flex w-full flex-col items-center gap-4 lg:gap-3 mb-10">
+          {skills.map((group, groupIndex) => (
+            <ul key={group.group} aria-label={group.group} className="flex w-full flex-wrap justify-center gap-2 sm:gap-2.5 lg:w-auto lg:flex-nowrap lg:gap-3">
+              {/* Fixed widths keep columns aligned: 2 on phones, 4 on tablets, one row per group on desktop */}
+              {group.items.map((skill, index) => {
+                const { Icon, color } = skillStyle(skill);
+                const lit = hoveredSkill === skill || activeSkill === skill;
+                return (
+                  <li
+                    key={skill}
+                    className="enter-pop w-[calc(50%-0.25rem)] sm:w-[10.5rem] lg:w-auto"
+                    style={delay(timing.skills + groupIndex * timing.groupGap + index * timing.itemGap)}
+                  >
+                    <div
+                      className={cn(
+                        "flex w-full items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-semibold sm:gap-2 sm:px-3 sm:py-2 lg:px-4",
+                        "cursor-default border transition-colors duration-500 ease-out",
+                        // Hover and the automatic highlight share one look
+                        lit ? "border-white/40 bg-zinc-900/60 text-zinc-50" : "border-transparent bg-zinc-100 text-zinc-900",
+                      )}
+                      onMouseEnter={() => setHoveredSkill(skill)}
+                      onMouseLeave={() => setHoveredSkill(null)}
+                    >
+                      {Icon ? (
+                        <Icon
+                          aria-hidden
+                          className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 transition-colors duration-500"
+                          style={{ color: lit ? color : "inherit" }}
+                        />
+                      ) : null}
+                      <span
+                        className="whitespace-nowrap text-[11px] sm:text-xs transition-colors duration-500"
+                        style={{ color: lit ? color : "inherit" }}
+                      >
+                        {skill}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           ))}
-        </motion.div>
+        </div>
 
-        <motion.div
-          className="flex gap-8 w-full justify-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-        >
-          <SeeMore />
-        </motion.div>
+        <div className="flex flex-wrap gap-4 w-full justify-center">
+          <div className="enter-rise" style={delay(timing.actions)}>
+            <SeeMore href="/projects" label="See all projects" />
+          </div>
+          <div className="enter-rise" style={delay(timing.actions + 120)}>
+            <SeeMore href="/stack" label="All technologies" gradient="from-cyan-400 to-blue-600" />
+          </div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

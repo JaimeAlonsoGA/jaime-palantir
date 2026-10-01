@@ -29,13 +29,14 @@
     }
   },
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "data/projects.tsxz"
+    "next-env.d.ts",
+    ".next-agent/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next-agent"
   ]
 }

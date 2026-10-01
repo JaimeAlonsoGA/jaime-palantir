@@ -18,7 +18,7 @@ const Arrow: React.FC<{ isHome: boolean }> = ({
         <Link
             href={isProjectDetail ? "/projects" : "/"}
             className="text-white/90 hover:text-white transition-colors duration-300"
-            aria-label={isProjectDetail ? "Volver a proyectos" : "Volver al inicio"}
+            aria-label={isProjectDetail ? "Back to projects" : "Back home"}
         >
             <IoIosArrowRoundBack size={24} />
         </Link>

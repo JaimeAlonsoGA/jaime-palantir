@@ -1,0 +1,33 @@
+{
+  "id": "alchimix",
+  "title": "Alchimix",
+  "summary": "Mobile app for creating custom cocktails, with a medieval theme. A gift to Adrian on his 23rd birthday.",
+  "kind": "App",
+  "year": 2023,
+  "status": "published",
+  "stack": [
+    "javascript",
+    "react native",
+    "expo"
+  ],
+  "links": [
+    {
+      "label": "Play Store",
+      "url": "https://play.google.com/store/apps/details?id=com.sonicode.coctelapp&pcampaignid=web_share"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/alchimix"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/alchimix/frame1.webp",
+      "/images/alchimix/frame2.webp",
+      "/images/alchimix/frame3.webp",
+      "/images/alchimix/figma1.webp",
+      "/images/alchimix/figma2.webp"
+    ],
+    "video": "https://youtube.com/embed/tVVbru0DCGo?feature=share"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "grasshopper",
+  "title": "grasshopper",
+  "summary": "CLI that carries a session from one AI agent to another, so you never re-explain a context. It reads the conversations agents already keep on disk and hands one over, locally: no network, no account, no model calls.",
+  "kind": "CLI",
+  "year": 2026,
+  "status": "published",
+  "stack": [
+    "go",
+    "shell",
+    "sqlite",
+    "mcp"
+  ],
+  "links": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/grasshopper"
+    },
+    {
+      "label": "Website",
+      "url": "https://hopcli.dev"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/grasshopper/site.webp",
+      "/images/grasshopper/terminal.webp",
+      "/images/grasshopper/card.webp"
+    ],
+    "video": null
+  }
+}

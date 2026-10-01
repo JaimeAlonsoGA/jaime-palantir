@@ -1,0 +1,71 @@
+{
+  "name": "Jaime Alonso",
+  "fullName": "Jaime Alonso García-Amorena",
+  "email": "alonsog.jaime@gmail.com",
+  "role": "Software Developer",
+  "location": "Madrid, Spain",
+  "workArrangement": "Freelance",
+  "headline": "I build fullstack applications and coordinate AI agent teams, from software architecture and databases to UI/UX and production monitoring.",
+  "links": [
+    {
+      "label": "GitHub",
+      "href": "https://github.com/JaimeAlonsoGA"
+    },
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/in/jaime360/"
+    },
+    {
+      "label": "Email",
+      "href": "mailto:alonsog.jaime@gmail.com"
+    }
+  ],
+  "experience": [
+    {
+      "company": "Welloop AB",
+      "role": "Agentic Software Developer",
+      "start": "2025-06",
+      "end": null,
+      "points": [
+        "Develop web applications and backend services for Welloop's youth sports platform using Next.js, React, Node.js and TypeScript.",
+        "Build an AI-powered chat app with custom permission access, alongside payments, integrations, notifications and a team management surface with events and communications.",
+        "Build and coordinate AI agent teams, automate development workflows, and use agent evaluations to test and refine their performance."
+      ]
+    },
+    {
+      "company": "MIRTO",
+      "role": "Software Developer",
+      "start": "2024-06",
+      "end": "2025-06",
+      "points": [
+        "Built and launched MIRTO's mobile app and developed internal tools for analytics, notifications and factory operations.",
+        "Built a Shopify integration to synchronise product listings across international stores."
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "group": "Core technologies",
+      "items": ["TypeScript", "React", "Next.js", "Node.js", "SQL / PostgreSQL", "AWS", "Docker"]
+    },
+    {
+      "group": "Competencies",
+      "items": ["API integration (REST)", "Software architecture", "Debugging", "Testing", "UI/UX", "CI/CD"]
+    },
+    {
+      "group": "Mobile",
+      "items": ["React Native / Expo", "Capacitor", "Android", "iOS"]
+    }
+  ],
+  "education": [
+    {
+      "title": "Higher Technician in Cross-Platform Software Development",
+      "school": "Universidad Francisco de Vitoria",
+      "year": 2025
+    }
+  ],
+  "languages": [
+    { "name": "Spanish", "level": "native" },
+    { "name": "English", "level": "professional" }
+  ]
+}

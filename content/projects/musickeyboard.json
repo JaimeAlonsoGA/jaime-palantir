@@ -1,0 +1,30 @@
+{
+  "id": "musickeyboard",
+  "title": "musickeyboard.io",
+  "summary": "Keyboarding on the web made simple. An interactive application to learn chords.",
+  "kind": "App",
+  "year": 2024,
+  "status": "published",
+  "stack": [
+    "javascript",
+    "react",
+    "tailwindcss"
+  ],
+  "links": [
+    {
+      "label": "Website",
+      "url": "https://musickeyboard.web.app/"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/musickeyboard_web"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/musickeyboard/musickeyboard1.webp",
+      "/images/musickeyboard/musickeyboard2.webp"
+    ],
+    "video": null
+  }
+}

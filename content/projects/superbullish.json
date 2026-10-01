@@ -1,0 +1,33 @@
+{
+  "id": "superbullish",
+  "title": "Super Bullish",
+  "summary": "Cryptocurrency Web3 video customization platform.",
+  "kind": "App",
+  "year": 2025,
+  "status": "published",
+  "stack": [
+    "typescript",
+    "react",
+    "tailwindcss",
+    "tanstack",
+    "postgresql",
+    "web3",
+    "wagmi"
+  ],
+  "links": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/superbullish-app"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/superbullish/superbullish1.webp",
+      "/images/superbullish/superbullish2.webp",
+      "/images/superbullish/superbullish3.webp",
+      "/images/superbullish/superbullish4.webp",
+      "/images/superbullish/superbullish5.webp"
+    ],
+    "video": null
+  }
+}

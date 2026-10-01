@@ -1,55 +1,21 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import background from "@/public/bg.webp";
+import nebula from "@/public/bg.webp";
 
-const Background = () => {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  return (
-    <>
-      {/* Static background image - loads first */}
-      <div className="fixed inset-0 -z-20 w-full h-screen">
-        <Image
-          src={background}
-          alt="Background"
-          fill
-          className="object-cover"
-          priority
-          quality={85}
-          sizes="100vw"
-        />
-      </div>
-
-      {/* Animated overlay - loads after mount */}
-      {isMounted && (
-        <motion.div
-          className="fixed inset-0 -z-10 w-full h-screen"
-          style={{
-            backgroundImage: `url(${background.src})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            filter: "grayscale(0.25)",
-          }}
-          initial={{ backgroundPosition: "50% 50%" }}
-          animate={{
-            backgroundPosition: ["50% 50%", "55% 45%", "50% 50%"]
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      )}
-    </>
-  );
-};
+// One image, slowly drifting on the GPU. The blurred placeholder is inlined in the HTML,
+// so the nebula shows on first paint and sharpens when the full image lands.
+const Background = () => (
+  <div className="fixed inset-0 -z-20 h-screen w-full overflow-hidden bg-black print:hidden">
+    <Image
+      src={nebula}
+      alt=""
+      fill
+      priority
+      quality={75}
+      sizes="100vw"
+      placeholder="blur"
+      className="drift object-cover [filter:grayscale(0.25)]"
+    />
+  </div>
+);
 
 export default Background;

@@ -1,0 +1,35 @@
+{
+  "id": "palantir",
+  "title": "Palantir",
+  "summary": "Agent-first lab notebook: a persistent home for the empirical knowledge that rarely changes, written and read by AI agents.",
+  "kind": "Tool",
+  "year": 2026,
+  "status": "published",
+  "stack": [
+    "typescript",
+    "react",
+    "tailwindcss",
+    "tanstack",
+    "node",
+    "rest-api",
+    "postgresql"
+  ],
+  "links": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/palantir"
+    },
+    {
+      "label": "Website",
+      "url": "https://palantir-agents.vercel.app"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/palantir/cover.webp",
+      "/images/palantir/entries.webp",
+      "/images/palantir/topic.webp"
+    ],
+    "video": null
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "vor2ex",
+  "title": "Vor2ex",
+  "summary": "Intelligent Amazon product finder and niche analyzer for FBA sellers. My capstone project for the Higher Technician degree in Cross-Platform Software Development.",
+  "kind": "App",
+  "year": 2025,
+  "status": "published",
+  "stack": [
+    "typescript",
+    "react",
+    "nextjs",
+    "tailwindcss",
+    "tanstack",
+    "node",
+    "rest-api",
+    "postgresql",
+    "amazon-sp-api"
+  ],
+  "links": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/vor2ex/tree/main"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/vor2ex/vor2ex1.webp",
+      "/images/vor2ex/vor2ex2.webp",
+      "/images/vor2ex/vor2ex3.webp",
+      "/images/vor2ex/vor2ex4.webp",
+      "/images/vor2ex/vor2ex5.webp"
+    ],
+    "video": null
+  }
+}

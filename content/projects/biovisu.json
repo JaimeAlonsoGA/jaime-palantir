@@ -1,0 +1,30 @@
+{
+  "id": "biovisu",
+  "title": "Bio Visu",
+  "summary": "Interactive app built hand in hand with a biologist to help graduates pass the Visu exam.",
+  "kind": "App",
+  "year": 2023,
+  "status": "published",
+  "stack": [
+    "typescript",
+    "javascript",
+    "tailwindcss",
+    "rest-api",
+    "react native",
+    "expo"
+  ],
+  "links": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/visuvisu"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/visu/frame1.webp",
+      "/images/visu/frame2.webp",
+      "/images/visu/frame3.webp"
+    ],
+    "video": "https://youtube.com/embed/CGobMb4hzZc?feature=share"
+  }
+}

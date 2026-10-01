@@ -1,0 +1,31 @@
+{
+  "id": "elboskev1",
+  "title": "El Boske",
+  "summary": "Complete website for El Boske, a music studio.",
+  "kind": "Web",
+  "year": 2024,
+  "status": "published",
+  "stack": [
+    "typescript",
+    "javascript",
+    "react",
+    "tailwindcss"
+  ],
+  "links": [
+    {
+      "label": "Website",
+      "url": "https://elboskestudio.web.app/"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/studio-landing"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/elboske/elboske1.webp",
+      "/images/elboske/elboske2.webp"
+    ],
+    "video": null
+  }
+}

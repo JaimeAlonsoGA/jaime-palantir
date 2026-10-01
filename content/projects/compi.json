@@ -1,0 +1,32 @@
+{
+  "id": "compi",
+  "title": "Compi",
+  "summary": "Palm-sized AI voice companion for the desk, built on an ESP32-S3. Press the button and speak: it answers out loud through the OpenAI Realtime API and shows what it is doing with a single status light. A companion app sets it up over Wi-Fi.",
+  "kind": "Hardware",
+  "year": 2026,
+  "status": "published",
+  "stack": [
+    "typescript",
+    "c++",
+    "react",
+    "rest-api",
+    "github-actions",
+    "openai",
+    "capacitor",
+    "esp32",
+    "arduino",
+    "platformio"
+  ],
+  "links": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/compi-monorepo"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/compi/wiring.webp"
+    ],
+    "video": null
+  }
+}

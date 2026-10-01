@@ -1,0 +1,35 @@
+{
+  "id": "400",
+  "title": "Internal Management System",
+  "summary": "Custom private web system from scratch to efficiently manage and administer internal resources for MIRTO Corporation.",
+  "kind": "App",
+  "year": 2024,
+  "status": "published",
+  "stack": [
+    "typescript",
+    "react",
+    "tailwindcss",
+    "tanstack",
+    "node",
+    "rest-api",
+    "db2",
+    "nosql",
+    "firebase",
+    "docker"
+  ],
+  "links": [],
+  "media": {
+    "images": [
+      "/images/400/card2.webp",
+      "/images/400/card3.webp",
+      "/images/400/card4.webp",
+      "/images/400/card5.webp",
+      "/images/400/card6.webp",
+      "/images/400/card7.webp",
+      "/images/400/card8.webp",
+      "/images/400/card9.webp",
+      "/images/400/card1.webp"
+    ],
+    "video": "https://www.youtube.com/embed/FYXvtEI2agk?si=VsCWdzB4bo7s97AU"
+  }
+}

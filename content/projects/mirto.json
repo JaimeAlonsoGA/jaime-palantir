@@ -1,0 +1,34 @@
+{
+  "id": "mirto",
+  "title": "Mirto 1956",
+  "summary": "Mobile app for MIRTO®, integrated with Shopify and all its features.",
+  "kind": "App",
+  "year": 2025,
+  "status": "published",
+  "stack": [
+    "typescript",
+    "tailwindcss",
+    "nosql",
+    "firebase",
+    "react native",
+    "expo"
+  ],
+  "links": [
+    {
+      "label": "Play Store",
+      "url": "https://play.google.com/store/apps/details?id=com.mirto.shop&hl=es"
+    },
+    {
+      "label": "App Store",
+      "url": "https://apps.apple.com/us/app/mirto/id6743855760"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/mirto/frame1.webp",
+      "/images/mirto/frame2.webp",
+      "/images/mirto/frame3.webp"
+    ],
+    "video": null
+  }
+}
