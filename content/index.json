@@ -1,10 +1,12 @@
 {
-  "updatedAt": "2026-01-19T00:04:47.000Z",
+  "updatedAt": "2026-10-02T21:25:33.100Z",
+  "lead": 4,
   "projectIds": [
     "grasshopper",
     "sona",
     "palantir",
     "compi",
+    "quickeys",
     "mirto",
     "superbullish",
     "vor2ex",
@@ -15,6 +17,5 @@
     "vivilife",
     "musickeyboard",
     "elboskev1"
-  ],
-  "lead": 4
+  ]
 }

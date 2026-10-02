@@ -1,0 +1,30 @@
+{
+  "id": "quickeys",
+  "title": "Quickeys",
+  "summary": "A quick online piano for looking up notes, chords and scales. Type a chord and it lights up on the keys and plays; play a few notes and it names the chord. Every chord and scale also has its own static page, readable by search engines and AI agents.",
+  "kind": "App",
+  "year": 2026,
+  "status": "published",
+  "stack": [
+    "javascript",
+    "react",
+    "tailwindcss"
+  ],
+  "links": [
+    {
+      "label": "Website",
+      "url": "https://quickeys.app"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/uploads/murh21xt-1103bd58-11eb-4603-be9f-e51d4b42bc9a.webp",
+      "/images/uploads/murh21yo-c60bf308-9afa-4e5d-962c-2b9a0dee7d92.webp",
+      "/images/uploads/murh21zf-4dd26b3a-c364-4a53-83ed-0adce6a03016.webp",
+      "/images/uploads/murh2205-670dad04-1d72-425a-90d7-5a38fcf29e7d.webp",
+      "/images/uploads/murh220u-99a60abb-c346-49ba-a254-f35adb081be0.webp",
+      "/images/uploads/murh221l-925403d8-37cb-43a6-9478-d99610dc31d4.webp"
+    ],
+    "video": null
+  }
+}
