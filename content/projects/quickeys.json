@@ -1,7 +1,7 @@
 {
   "id": "quickeys",
   "title": "Quickeys",
-  "summary": "A quick online piano for looking up notes, chords and scales. Type a chord and it lights up on the keys and plays; play a few notes and it names the chord. Every chord and scale also has its own static page, readable by search engines and AI agents.",
+  "summary": "A quick online piano for looking up notes, chords and scales. Type a chord and it lights up on the keys and plays; play a few notes and it names the chord. Every chord and scale also has its own static page, readable by search engines and AI agents. It started in 2024 as musickeyboard.io.",
   "kind": "App",
   "year": 2026,
   "status": "published",
@@ -14,6 +14,10 @@
     {
       "label": "Website",
       "url": "https://quickeys.app"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/quickeys"
     }
   ],
   "media": {
