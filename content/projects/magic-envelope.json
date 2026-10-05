@@ -1,0 +1,38 @@
+{
+  "id": "magic-envelope",
+  "title": "Magic Envelope",
+  "summary": "Free invitations and letters that arrive in a sealed envelope. You build the letter from typed blocks (date, place with a map, RSVP, schedule, dress code, gifts), pick a style, and every guest gets their own link with their name on the envelope. It opens in two taps, like real mail. AI agents can make and send invitations through its REST API and MCP server.",
+  "kind": "App",
+  "year": 2026,
+  "status": "published",
+  "stack": [
+    "typescript",
+    "react",
+    "nextjs",
+    "tailwindcss",
+    "capacitor",
+    "rest-api",
+    "mcp"
+  ],
+  "links": [
+    {
+      "label": "Website",
+      "url": "https://magic-envelope.com"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/magic-envelope"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/uploads/muvkn7kz-2f9dd193-e422-41c1-ad8c-0805befaecb9.webp",
+      "/images/uploads/muvkn7lb-5aa14aef-690d-4a1f-9e6d-95fdcfeb22be.webp",
+      "/images/uploads/muvkn7lm-faee2364-0594-4e39-9b7b-65a0b2885039.webp",
+      "/images/uploads/muvkn7lx-7ac5c073-e80c-4858-8a45-76342a00cd3b.webp",
+      "/images/uploads/muvkn7m9-666ab7ca-d634-4926-a074-7b2f26d91931.webp",
+      "/images/uploads/muvkn7mk-5f6590ed-8e11-4ccf-bd1a-ae4517b246a8.webp"
+    ],
+    "video": null
+  }
+}
