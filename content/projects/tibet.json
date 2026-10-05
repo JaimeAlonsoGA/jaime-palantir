@@ -1,0 +1,31 @@
+{
+  "id": "tibet",
+  "title": "Tibet",
+  "summary": "A GNOME extension that gets you out of your chair. Every so often it covers the screen with an animated buddy who stretches with you: a llama monk, a cat or a cozy girl. Tap the checkmark and you are back at work. Open source and published on GNOME Extensions.",
+  "kind": "Plugin",
+  "year": 2026,
+  "status": "published",
+  "stack": [
+    "javascript",
+    "gnome"
+  ],
+  "links": [
+    {
+      "label": "GNOME Extensions",
+      "url": "https://extensions.gnome.org/extension/11148/tibet/"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/JaimeAlonsoGA/tibet"
+    }
+  ],
+  "media": {
+    "images": [
+      "/images/tibet/gatito.webp",
+      "/images/tibet/llama.webp",
+      "/images/tibet/cozy.webp",
+      "/images/tibet/prefs.webp"
+    ],
+    "video": null
+  }
+}
