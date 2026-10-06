@@ -48,9 +48,11 @@ export function renderLlms(portfolio: Portfolio, techs: Tech[]) {
     "",
     ...person.links.filter((link) => /^https?:/.test(link.href)).map((link) => `- [${link.label}](${link.href})`),
     "",
-    "## Optional",
+    "## Updating this portfolio",
     "",
-    `- [Owner API](${url}/api/v1): for ${person.name}'s own agents to update this portfolio; needs his token`,
+    `Only for agents working for ${person.name}, with the password he gave them.`,
+    `Start at ${url}/api/v1: it explains how to add, edit or archive a project, upload screenshots and change the profile or CV.`,
+    "Send the password as `Authorization: Bearer <password>`. Each change is published on the site about a minute later.",
     "",
   ].join("\n");
 }

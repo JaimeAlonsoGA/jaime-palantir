@@ -80,7 +80,7 @@ Animaciones de la home: CSS (`enter-*` en `app/globals.css`), en orden de lectur
 
 ## Lo que leen agentes y buscadores
 
-Público y sin token: las páginas, `GET /llms.txt`, `GET /cv.txt`, `GET /sitemap.xml`, `GET /robots.txt` y la imagen para compartir. Cada página lleva datos estructurados (schema.org, `lib/seo`): la persona y la web en todas, `ProfilePage` en inicio, CV y contacto, y cada proyecto como `CreativeWork`. `robots.txt` cierra `/api/`.
+Público y sin token: las páginas, `GET /api/v1` (la guía de la API), `GET /llms.txt` (que la enlaza en "Updating this portfolio"), `GET /cv.txt`, `GET /sitemap.xml`, `GET /robots.txt` y la imagen para compartir. Cada página lleva datos estructurados (schema.org, `lib/seo`): la persona y la web en todas, `ProfilePage` en inicio, CV y contacto, y cada proyecto como `CreativeWork`. `robots.txt` no cierra nada: la guía de la API debe poder leerse, y el resto responde 401 sin token.
 
 ## Qué no hacer
 

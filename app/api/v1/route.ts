@@ -7,7 +7,7 @@ const index = {
   name: "jaimealonso",
   what: "Owner API for jaimealonso.dev. Read and change every part of the portfolio: profile, CV, site copy, projects, technologies, order and images.",
   base: "https://jaimealonso.dev/api/v1",
-  auth: "Every route except this one and /openapi.json needs `Authorization: Bearer <PORTFOLIO_API_TOKEN>`. Ask Jaime for the token; it is never in the repo.",
+  auth: "Every route except this one and /openapi.json needs `Authorization: Bearer <password>`. The password is the one Jaime gave you; it is never in the repo or on the site.",
   publishing:
     "In production a write is one commit to the main branch of github.com/JaimeAlonsoGA/jaimealonso; Vercel deploys it and the site shows it about a minute later. The response carries the commit in the X-Portfolio-Commit header. A 409 means the portfolio changed mid-request and nothing was written: send it again.",
   spec: "/api/v1/openapi.json",

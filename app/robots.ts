@@ -5,8 +5,8 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   const { site } = await readPortfolio();
   const url = site.siteUrl.replace(/\/$/, "");
   return {
-    // The API is private; agents read the site, /llms.txt and /cv.txt instead
-    rules: [{ userAgent: "*", allow: "/", disallow: "/api/" }],
+    // The owner API stays crawlable: its guide is public and the rest answers 401 without the token
+    rules: [{ userAgent: "*", allow: "/" }],
     sitemap: `${url}/sitemap.xml`,
     host: url,
   };
