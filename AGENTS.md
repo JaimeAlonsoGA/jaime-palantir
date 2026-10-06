@@ -1,4 +1,4 @@
-# jaime-palantir
+# jaimealonso
 
 Portfolio de Jaime Alonso. Este archivo es el contrato. Léelo antes de editar nada.
 
@@ -50,11 +50,15 @@ Un proyecto es una frase (`summary`), su tipo (`kind`: "App", "Web", "Tool", "Pl
 
 `/cv` es el CV para leer o imprimir y `/cv.txt` el mismo CV en texto. `/llms.txt` (formato llmstxt.org) es la puerta para agentes externos: quién es Jaime en dos líneas y enlaces absolutos a CV, contacto, stack y cada proyecto. Todo sale de estos archivos.
 
-La API (`/api/v1`) es privada, para los agentes de Jaime: toda petición, lectura o escritura, lleva `Authorization: Bearer $PORTFOLIO_API_TOKEN` (en `.env.local`, plantilla en `.env.example`). La comprueba `middleware.ts`, un solo punto para todas las rutas; sin token configurado la API se apaga (503). El índice está en `GET /api/v1` y la especificación en `GET /api/v1/openapi.json`. `PUT /api/v1/profile` reemplaza `content/person.json`; la API escribe solo el archivo del cambio. `PUT /api/v1/projects/order` escribe el orden y, si viene `lead`, cuántos de los primeros publicados salen en Featured work y en grande en `/projects`. Un agente también puede editar los JSON directamente.
+## Cambiar el portfolio desde un agente
 
-Las páginas se generan en el build (estáticas). Tras cada escritura, la API llama a `refreshPages()` (`lib/api/revalidate.ts`) para que la siguiente visita lea los archivos nuevos.
+La forma normal es la API de producción, sin clonar nada: `https://jaimealonso.dev/api/v1`. `GET /api/v1` es público y es la guía: autenticación, recetas (añadir, editar o archivar un proyecto, cambiar el perfil o el CV) y la forma de un proyecto. `GET /api/v1/openapi.json` es la especificación. Todo lo demás, lecturas incluidas, lleva `Authorization: Bearer <PORTFOLIO_API_TOKEN>`; el token lo da Jaime y no está en el repo. Lo comprueba `middleware.ts`, un solo punto para todas las rutas; sin token configurado la API se apaga (503).
 
-En local, la API escribe en disco. En Vercel el disco no guarda escrituras. Publicar es un commit de esos archivos y un despliegue. No añadas una base de datos para esto.
+En producción cada escritura es un commit en `main` de `github.com/JaimeAlonsoGA/jaimealonso` (`lib/content/source.ts`, con `PORTFOLIO_GITHUB_TOKEN` y `PORTFOLIO_GITHUB_REPO` en Vercel), y Vercel lo publica en un minuto. La respuesta trae el commit en `X-Portfolio-Commit`. Un 409 significa que el portfolio cambió a mitad de la petición y no se escribió nada: se repite. La API lee siempre la última versión de `main`, así que dos escrituras seguidas no se pisan. No añadas una base de datos para esto.
+
+En local (sin esas variables) la API lee y escribe en disco, y tras cada escritura `refreshPages()` (`lib/api/revalidate.ts`) rehace las páginas. Un agente con el repo también puede editar los JSON y hacer commit; el resultado es el mismo.
+
+Las páginas se generan en el build (estáticas) desde los archivos del commit desplegado.
 
 ## Tecnología
 

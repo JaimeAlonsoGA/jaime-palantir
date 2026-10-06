@@ -48,5 +48,9 @@ export function renderLlms(portfolio: Portfolio, techs: Tech[]) {
     "",
     ...person.links.filter((link) => /^https?:/.test(link.href)).map((link) => `- [${link.label}](${link.href})`),
     "",
+    "## Optional",
+    "",
+    `- [Owner API](${url}/api/v1): for ${person.name}'s own agents to update this portfolio; needs his token`,
+    "",
   ].join("\n");
 }

@@ -1,4 +1,4 @@
-# jaime-palantir
+# jaimealonso
 
 Portfolio de Jaime Alonso. Next.js 15 sirve las páginas y una API privada para sus agentes. El contenido vive en archivos, no en una base de datos.
 
@@ -24,15 +24,13 @@ npm run dev
 - `/cv` and `/cv.txt` — the CV, as a page and as plain text
 - `/sitemap.xml`, `/robots.txt`, `/opengraph-image`
 
-## Private API
+## Owner API
 
-Every `/api/v1` request needs `Authorization: Bearer $PORTFOLIO_API_TOKEN`. Start at `GET /api/v1`; the spec is `GET /api/v1/openapi.json`. Add `?include=all` to see drafts and archived projects.
+`https://jaimealonso.dev/api/v1`. Start with `GET /api/v1` (public): it explains auth, the recipes and the shape of a project. Everything else needs `Authorization: Bearer $PORTFOLIO_API_TOKEN`. In production each write is a commit to `main`, live after the Vercel deploy (about a minute). Locally, without `PORTFOLIO_GITHUB_TOKEN`, it writes to disk.
 
-- `GET /api/v1/portfolio`, `/profile`, `/site`, `/projects`, `/projects/{id}`, `/techs`
+- `GET /api/v1/portfolio?include=all`, `/profile`, `/site`, `/projects`, `/projects/{id}`, `/techs`
 - `PUT /api/v1/profile` and `PUT /api/v1/site` replace those objects
 - `POST /api/v1/projects` creates one; `PATCH /api/v1/projects/{id}` updates it; `DELETE` archives it
-- `PUT /api/v1/projects/order` with `{ "ids": [...], "lead": 4 }` sets display order and how many of the first published projects are featured
+- `PUT /api/v1/projects/order` with `{ "ids": [...], "lead"?: n }` sets order and how many are featured
 - `PUT /api/v1/techs` replaces the catalog; `PUT` or `DELETE /api/v1/techs/{id}` edits one
 - `POST /api/v1/media` uploads `file` and returns a `/images/uploads/...` path
-
-Quién es Jaime está en `content/person.json`. Un proyecto es `content/projects/<id>.json`. El id es el nombre del archivo. `stack` usa ids de `content/techs.json`. `/cv`, `/cv.txt` y `/llms.txt` salen de esos archivos. El orden y los proyectos destacados de `/contact` están en `content/index.json`. Icons for known technology ids stay in code; an unknown id still renders as a label.

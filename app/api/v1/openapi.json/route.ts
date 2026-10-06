@@ -5,14 +5,15 @@ export const dynamic = "force-dynamic";
 const spec = {
   openapi: "3.1.0",
   info: {
-    title: "jaime-palantir",
+    title: "jaimealonso",
     version: "1.0.0",
-    description: "Private API for Jaime's agents. Every route needs the bearer token. `?include=all` adds drafts and archived projects.",
+    description: "Owner API for jaimealonso.dev. Every route except GET /api/v1 and this spec needs the bearer token. In production each write is a commit to main, live after the deploy (~1 min). `?include=all` adds drafts and archived projects.",
   },
   security: [{ bearer: [] }],
   components: { securitySchemes: { bearer: { type: "http", scheme: "bearer" } } },
+  servers: [{ url: "https://jaimealonso.dev" }],
   paths: {
-    "/api/v1": { get: { summary: "Index" } },
+    "/api/v1": { get: { summary: "Guide: auth, recipes and the project shape (public)", security: [] } },
     "/api/v1/portfolio": { get: { summary: "Profile, site copy, projects and technologies" } },
     "/api/v1/profile": { get: { summary: "Profile" }, put: { summary: "Replace content/person.json" } },
     "/api/v1/site": { get: { summary: "Site copy" }, put: { summary: "Replace content/site.json" } },

@@ -1,6 +1,5 @@
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
-import { ContentError, publicRoot } from "./store";
+import { ContentError } from "./store";
+import { source } from "./source";
 
 const types = new Map([
   ["image/webp", "webp"],
@@ -10,6 +9,7 @@ const types = new Map([
   ["image/avif", "avif"],
 ]);
 
+/** Saves an image under public/images/uploads (a commit in production) and returns its site path. */
 export async function saveMedia(file: File) {
   const extension = types.get(file.type);
   if (!extension) {
@@ -19,8 +19,7 @@ export async function saveMedia(file: File) {
     throw new ContentError("validation", "Images must stay under 8 MB");
   }
   const name = `${Date.now().toString(36)}-${crypto.randomUUID()}.${extension}`;
-  const directory = path.join(publicRoot(), "images", "uploads");
-  await mkdir(directory, { recursive: true });
-  await writeFile(path.join(directory, name), Buffer.from(await file.arrayBuffer()));
+  const base64 = Buffer.from(await file.arrayBuffer()).toString("base64");
+  await source().commit([{ path: `public/images/uploads/${name}`, base64 }], `content: upload images/uploads/${name}`);
   return { path: `/images/uploads/${name}`, bytes: file.size, contentType: file.type };
 }

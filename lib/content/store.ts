@@ -1,5 +1,3 @@
-import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
-import path from "node:path";
 import {
   indexSchema,
   personSchema,
@@ -15,36 +13,29 @@ import {
   type SiteCopy,
   type Tech,
 } from "./schema";
+import { type Change, MissingFile, publicRoot, source } from "./source";
 import { orderStack } from "./stack-order";
+
+export { publicRoot };
 
 let writeQueue: Promise<unknown> = Promise.resolve();
 
-function contentRoot() {
-  return process.env.CONTENT_ROOT ?? path.join(process.cwd(), "content");
-}
+// Repo-relative paths: the same on disk and in the GitHub repo
+const personPath = "content/person.json";
+const sitePath = "content/site.json";
+const indexPath = "content/index.json";
+const techsPath = "content/techs.json";
+const projectFile = (id: string) => `content/projects/${id}.json`;
 
-export function publicRoot() {
-  return process.env.PUBLIC_ROOT ?? path.join(process.cwd(), "public");
-}
+const json = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
 
-function personPath() {
-  return path.join(contentRoot(), "person.json");
-}
-
-function sitePath() {
-  return path.join(contentRoot(), "site.json");
-}
-
-function indexPath() {
-  return path.join(contentRoot(), "index.json");
-}
-
-function projectFile(id: string) {
-  return path.join(contentRoot(), "projects", `${id}.json`);
-}
-
-function techsPath() {
-  return path.join(contentRoot(), "techs.json");
+async function read(file: string) {
+  try {
+    return await source().read(file);
+  } catch (reason) {
+    if (reason instanceof MissingFile) throw new ContentError("not_found", `${file} is missing`);
+    throw reason;
+  }
 }
 
 async function locked<T>(task: () => Promise<T>): Promise<T> {
@@ -56,24 +47,17 @@ async function locked<T>(task: () => Promise<T>): Promise<T> {
   return run;
 }
 
-async function atomicWrite(filePath: string, value: unknown) {
-  await mkdir(path.dirname(filePath), { recursive: true });
-  const temporary = `${filePath}.${process.pid}.tmp`;
-  await writeFile(temporary, `${JSON.stringify(value, null, 2)}\n`, "utf8");
-  await rename(temporary, filePath);
-}
-
 export async function readPortfolio(): Promise<Portfolio & { lead: number }> {
   const [personRaw, siteRaw, indexRaw, techs] = await Promise.all([
-    readFile(personPath(), "utf8"),
-    readFile(sitePath(), "utf8"),
-    readFile(indexPath(), "utf8"),
+    read(personPath),
+    read(sitePath),
+    read(indexPath),
     readTechs(),
   ]);
   const index = indexSchema.parse(JSON.parse(indexRaw));
   const projects = await Promise.all(
     index.projectIds.map(async (id) => {
-      const project = projectSchema.parse(JSON.parse(await readFile(projectFile(id), "utf8")));
+      const project = projectSchema.parse(JSON.parse(await read(projectFile(id))));
       if (project.id !== id) {
         throw new ContentError(
           "validation",
@@ -96,7 +80,7 @@ export async function readPortfolio(): Promise<Portfolio & { lead: number }> {
 }
 
 export async function readTechs(): Promise<Tech[]> {
-  const raw = await readFile(techsPath(), "utf8");
+  const raw = await read(techsPath);
   return techsSchema.parse(JSON.parse(raw));
 }
 
@@ -113,6 +97,14 @@ export function publicPortfolio(portfolio: Portfolio) {
   };
 }
 
+/** Commit message for a set of changes, e.g. "content: update projects/sona, index". */
+function describe(changes: Change[]) {
+  const names = changes.map((change) =>
+    `${change.remove ? "remove " : ""}${change.path.replace(/^content\//, "").replace(/\.json$/, "")}`,
+  );
+  return `content: update ${names.join(", ")}`;
+}
+
 function sameJson(left: unknown, right: unknown) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
@@ -125,31 +117,29 @@ async function savePortfolio(portfolio: Portfolio & { lead?: number }) {
     updatedAt: new Date().toISOString(),
   });
   const previous = await readPortfolio();
-  const writes: Promise<unknown>[] = [];
-  if (!sameJson(previous.person, next.person)) writes.push(atomicWrite(personPath(), next.person));
-  if (!sameJson(previous.site, next.site)) writes.push(atomicWrite(sitePath(), next.site));
+  const changes: Change[] = [];
+  if (!sameJson(previous.person, next.person)) changes.push({ path: personPath, text: json(next.person) });
+  if (!sameJson(previous.site, next.site)) changes.push({ path: sitePath, text: json(next.site) });
   const previousById = new Map(previous.projects.map((project) => [project.id, project]));
   for (const project of next.projects) {
     if (!sameJson(previousById.get(project.id), project)) {
-      writes.push(atomicWrite(projectFile(project.id), project));
+      changes.push({ path: projectFile(project.id), text: json(project) });
     }
   }
   const nextIds = next.projects.map((project) => project.id);
-  const onDisk = indexSchema.parse(JSON.parse(await readFile(indexPath(), "utf8")));
-  const lead = portfolio.lead ?? onDisk.lead;
+  const lead = portfolio.lead ?? previous.lead;
   const orderChanged = !sameJson(previous.projects.map((project) => project.id), nextIds);
-  if (orderChanged || lead !== onDisk.lead || writes.length > 0) {
-    writes.push(atomicWrite(indexPath(), { updatedAt: next.updatedAt, lead, projectIds: nextIds }));
+  const contentChanged = changes.length > 0;
+  if (orderChanged || lead !== previous.lead || contentChanged) {
+    changes.push({ path: indexPath, text: json({ updatedAt: next.updatedAt, lead, projectIds: nextIds }) });
   }
-  await Promise.all(writes);
   const kept = new Set(nextIds);
-  await Promise.all(
-    previous.projects
-      .filter((project) => !kept.has(project.id))
-      .map((project) => rm(projectFile(project.id), { force: true })),
-  );
-  const saved = writes.length > 0 ? next : { ...next, updatedAt: previous.updatedAt };
-  return { ...saved, lead: portfolio.lead ?? onDisk.lead };
+  for (const project of previous.projects) {
+    if (!kept.has(project.id)) changes.push({ path: projectFile(project.id), remove: true });
+  }
+  await source().commit(changes, describe(changes));
+  const saved = changes.length > 0 ? next : { ...next, updatedAt: previous.updatedAt };
+  return { ...saved, lead };
 }
 
 export function updatePortfolio(
@@ -255,7 +245,7 @@ export function replaceTechs(techs: Tech[]) {
   return locked(async () => {
     const parsed = techsSchema.parse(techs);
     await assertTechsInUse(parsed);
-    await atomicWrite(techsPath(), parsed);
+    await source().commit([{ path: techsPath, text: json(parsed) }], "content: update techs");
     return parsed;
   });
 }
@@ -268,7 +258,7 @@ export function upsertTech(input: unknown) {
     if (index === -1) techs.push(tech);
     else techs[index] = tech;
     const parsed = techsSchema.parse(techs);
-    await atomicWrite(techsPath(), parsed);
+    await source().commit([{ path: techsPath, text: json(parsed) }], `content: update tech ${tech.id}`);
     return tech;
   });
 }
@@ -281,7 +271,7 @@ export function removeTech(id: string) {
       throw new ContentError("not_found", `Tech \"${id}\" was not found`);
     }
     await assertTechsInUse(next);
-    await atomicWrite(techsPath(), next);
+    await source().commit([{ path: techsPath, text: json(next) }], `content: remove tech ${id}`);
     return next;
   });
 }
